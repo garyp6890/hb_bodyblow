@@ -33,6 +33,9 @@ import {
 import BlogPostDetail from '../pages/Blog/PostDetail';
 import CategoryView from '../pages/Blog/CategoryView';
 import GiftsInKind from '../pages/GiftsInKind';
+import Login from '../pages/Admin/Login';
+import Dashboard from '../pages/Admin/Dashboard';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 function Routes() {
   return (
@@ -66,6 +69,17 @@ function Routes() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/suggestions" element={<Suggestions />} />
       <Route path="/events" element={<Events />} />
+
+      {/* Admin Routes */}
+      <Route path="/admin/login" element={<Login />} />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
     </RouterRoutes>
   );
 }
