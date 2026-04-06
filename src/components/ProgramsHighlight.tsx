@@ -1,55 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Music, Sun, Users, Trophy, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const programs = [
-  {
-    title: "Adult Day Program",
-    description: "Structured environments for learning, socializing, and personal growth",
-    icon: Users,
-    image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80"
-  },
-  {
-    title: "Summer Day Camp",
-    description: "Adapted activities fostering friendships and fun",
-    icon: Sun,
-    image: "https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80"
-  },
-  {
-    title: "Music Therapy",
-    description: "Harnessing music to enhance communication and skills",
-    icon: Music,
-    image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?auto=format&fit=crop&q=80"
-  },
-  {
-    title: "Recreational Programs & Special Olympics",
-    description: "For the Love of the Game and Beyond",
-    icon: Trophy,
-    image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&q=80"
-  }
-];
+import { getPrograms, Program } from '../lib/programs';
+import * as LucideIcons from 'lucide-react';
 
 export default function ProgramsHighlight() {
+  const [programs, setPrograms] = useState<Program[]>([]);
+
+  useEffect(() => {
+    const loadPrograms = async () => {
+      const data = await getPrograms();
+      setPrograms(data);
+    };
+    loadPrograms();
+  }, []);
+
+  const getIcon = (iconName: string) => {
+    const icons: Record<string, any> = {
+      Users: LucideIcons.Users,
+      Sun: LucideIcons.Sun,
+      Music: LucideIcons.Music,
+      Trophy: LucideIcons.Trophy,
+    };
+    return icons[iconName] || LucideIcons.Users;
+  };
+
   return (
     <div className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <p className="text-xl text-gray-600 text-center mb-8">
-          Participating in activities with peers is a fundamental part of the human experience. 
+          Participating in activities with peers is a fundamental part of the human experience.
           Happiness Bag recognizes this need and makes sure to provide a range of opportunities throughout the year for everyone.
         </p>
         <h2 className="text-4xl font-bold text-center mb-12">Our Programs</h2>
-        
+
         <div className="grid md:grid-cols-4 gap-8 mb-12">
           {programs.map((program) => {
-            const Icon = program.icon;
+            const Icon = getIcon(program.iconName);
             return (
-              <div 
-                key={program.title}
+              <div
+                key={program.id}
                 className="bg-gray-50 rounded-xl overflow-hidden transition-all hover:scale-105 shadow-xl hover:shadow-2xl"
               >
                 <div className="relative h-48">
                   <img
-                    src={program.image}
+                    src={program.imageUrl}
                     alt={program.title}
                     className="w-full h-full object-cover"
                   />
@@ -57,7 +52,7 @@ export default function ProgramsHighlight() {
                     <Icon className="w-6 h-6" />
                   </div>
                 </div>
-                
+
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-3">{program.title}</h3>
                   <p className="text-gray-600 mb-4">{program.description}</p>

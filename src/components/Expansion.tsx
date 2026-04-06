@@ -1,107 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, Building2, School, Bath, Sparkles, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const constructionUpdates = [
-  {
-    date: "October 20, 2023",
-    title: "Breaking Ground",
-    description: "Heavy equipment moves in to prepare the land for construction",
-    images: [
-      "https://images.unsplash.com/photo-1626248801379-51a0748a5f96?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    date: "October 28, 2023",
-    title: "Infrastructure Connection",
-    description: "Connecting essential utilities to city infrastructure",
-    images: [
-      "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    date: "November 9, 2023",
-    title: "Letters of Hope",
-    description: "Our friends write heartfelt notes to the construction crew",
-    images: [
-      "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    date: "November 28, 2023",
-    title: "Foundation Complete",
-    description: "Solid foundations laid for our future growth",
-    images: [
-      "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    date: "December 15, 2023",
-    title: "Walls Rising",
-    description: "Our dreams taking physical shape as walls go up",
-    images: [
-      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    date: "January 5, 2024",
-    title: "Roof Installation",
-    description: "Weather-tight milestone achieved with roof completion",
-    images: [
-      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    date: "January 20, 2024",
-    title: "Windows & Doors",
-    description: "Building envelope secured with windows and doors",
-    images: [
-      "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    date: "February 1, 2024",
-    title: "Interior Progress",
-    description: "Interior walls and systems installation begins",
-    images: [
-      "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    date: "February 15, 2024",
-    title: "Electrical Systems",
-    description: "Powering our future with electrical installation",
-    images: [
-      "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    date: "March 1, 2024",
-    title: "Finishing Touches",
-    description: "Interior finishes bringing spaces to life",
-    images: [
-      "https://images.unsplash.com/photo-1517581177682-a085bb7ffb15?auto=format&fit=crop&q=80"
-    ]
-  },
-  {
-    date: "March 15, 2024",
-    title: "Landscaping Begins",
-    description: "Creating welcoming outdoor spaces for all",
-    images: [
-      "https://images.unsplash.com/photo-1558904541-efa843a96f01?auto=format&fit=crop&q=80"
-    ]
-  }
-];
+import { getConstructionUpdates, getExpansionSettings, ConstructionUpdate, ExpansionSettings } from '../lib/expansion';
 
 export default function Expansion() {
+  const [constructionUpdates, setConstructionUpdates] = useState<ConstructionUpdate[]>([]);
+  const [settings, setSettings] = useState<ExpansionSettings>({ progress: 2449500, goal: 3450000, videoId: '5jaX8NcLOEQ' });
   const [activeEvent, setActiveEvent] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showLightbox, setShowLightbox] = useState(false);
-  
-  const progress = 2449500;
-  const goal = 3450000;
+
+  useEffect(() => {
+    const loadData = async () => {
+      const [updates, expansionSettings] = await Promise.all([
+        getConstructionUpdates(),
+        getExpansionSettings()
+      ]);
+      setConstructionUpdates(updates);
+      setSettings(expansionSettings);
+    };
+    loadData();
+  }, []);
+
+  const progress = settings.progress;
+  const goal = settings.goal;
   const progressPercentage = (progress / goal) * 100;
 
   const nextEvent = () => {
@@ -125,6 +47,10 @@ export default function Expansion() {
       (prev - 1 + constructionUpdates[activeEvent].images.length) % constructionUpdates[activeEvent].images.length
     );
   };
+
+  if (constructionUpdates.length === 0) {
+    return null;
+  }
 
   return (
     <div className="bg-white py-20">

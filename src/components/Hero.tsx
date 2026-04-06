@@ -1,43 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
-
-const slides = [
-  {
-    image: "https://www.happinessbag.org/uploads/1/3/7/6/137606177/oc_orig.jpg",
-    alt: "Friends enjoying Special Olympics in Terre Haute Indiana"
-  },
-  {
-    image: "https://www.happinessbag.org/uploads/1/3/7/6/137606177/basktetball-2_orig.jpg",
-    alt: "Happiness Bag Participants playing basketball"
-  },
-  {
-    image: "https://www.happinessbag.org/uploads/1/3/7/6/137606177/gallery18_orig.jpg",
-    alt: "Happiness Bag Director Jodi Moan and Recreational Sports Participant Celebrate a Victory"
-  }
-];
+import { getHeroSlides, HeroSlide } from '../lib/heroSlides';
 
 export default function Hero() {
+  const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
+    const loadSlides = async () => {
+      const data = await getHeroSlides();
+      setSlides(data);
+    };
+    loadSlides();
+  }, []);
+
+  useEffect(() => {
+    if (slides.length === 0) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   return (
     <div className="relative h-[calc(58vh)] mt-40 border-b-[8px] border-yellow-500">
       {slides.map((slide, index) => (
         <div
-          key={index}
+          key={slide.id}
           className={`absolute inset-0 transition-opacity duration-1000 ${
             index === currentSlide ? 'opacity-100' : 'opacity-0'
           }`}
         >
           <img
-            src={slide.image}
-            alt={slide.alt}
+            src={slide.imageUrl}
+            alt={slide.altText}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/60" />
