@@ -1,29 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, BookOpen, ArrowRight, LayoutGrid } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { 
-  givingGuidesPosts, 
-  corporateGivingPosts, 
-  giftsInKindPosts,
-  getPostsByCategory
-} from '../../../data/blogPosts';
+import {
+  getGivingGuidesPosts,
+  getCorporateGivingPosts,
+  getGiftsInKindPosts,
+  BlogPost
+} from '../../../lib/blogPosts';
 
 type GivingCategory = 'all' | 'legacy' | 'corporate' | 'gifts-in-kind';
 
 export default function GuidesGrid() {
   const [activeCategory, setActiveCategory] = useState<GivingCategory>('all');
+  const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
+  const [legacyPosts, setLegacyPosts] = useState<BlogPost[]>([]);
+  const [corporatePosts, setCorporatePosts] = useState<BlogPost[]>([]);
+  const [giftsInKindPosts, setGiftsInKindPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      const [legacy, corporate, giftsInKind] = await Promise.all([
+        getGivingGuidesPosts(),
+        getCorporateGivingPosts(),
+        getGiftsInKindPosts()
+      ]);
+      setLegacyPosts(legacy);
+      setCorporatePosts(corporate);
+      setGiftsInKindPosts(giftsInKind);
+      setAllPosts([...legacy, ...corporate, ...giftsInKind]);
+    };
+    loadPosts();
+  }, []);
 
   const getCategoryPosts = () => {
     switch (activeCategory) {
       case 'legacy':
-        return givingGuidesPosts;
+        return legacyPosts;
       case 'corporate':
-        return corporateGivingPosts;
+        return corporatePosts;
       case 'gifts-in-kind':
         return giftsInKindPosts;
       case 'all':
       default:
-        return [...givingGuidesPosts, ...corporateGivingPosts, ...giftsInKindPosts];
+        return allPosts;
     }
   };
 

@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { givingGuidesPosts } from '../../../../data/blogPosts';
+import { getGivingGuidesPosts, BlogPost } from '../../../../lib/blogPosts';
 
 export default function LegacyArticles() {
-  const featuredGuides = givingGuidesPosts.slice(0, 6);
-  
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      const data = await getGivingGuidesPosts();
+      setPosts(data.slice(0, 6));
+    };
+    loadPosts();
+  }, []);
+
   return (
     <div className="max-w-6xl mx-auto mb-20">
       <h2 className="text-4xl font-bold text-center mb-6">Legacy Giving Guides</h2>
@@ -15,7 +23,7 @@ export default function LegacyArticles() {
       </p>
       
       <div className="grid md:grid-cols-3 gap-8 mb-12">
-        {featuredGuides.map((guide) => (
+        {posts.map((guide) => (
           <Link
             key={guide.id}
             to={`/blog/${guide.slug}`}

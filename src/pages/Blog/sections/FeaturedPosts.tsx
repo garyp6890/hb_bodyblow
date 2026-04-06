@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { featuredPosts } from '../../../data/blogPosts';
+import { getFeaturedPosts, BlogPost } from '../../../lib/blogPosts';
 
 export default function FeaturedPosts() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      const data = await getFeaturedPosts();
+      setPosts(data);
+    };
+    loadPosts();
+  }, []);
+
   return (
     <div className="max-w-6xl mx-auto mb-20">
       <h2 className="text-3xl font-bold text-center mb-12">Featured Stories</h2>
-      
+
       <div className="grid md:grid-cols-3 gap-8">
-        {featuredPosts.map((post) => (
+        {posts.map((post) => (
           <Link 
             key={post.id}
             to={`/blog/${post.slug}`} 

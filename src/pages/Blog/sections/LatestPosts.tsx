@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { regularPosts } from '../../../data/blogPosts';
+import { getRegularPosts, BlogPost } from '../../../lib/blogPosts';
 
 export default function LatestPosts() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      const data = await getRegularPosts();
+      setPosts(data);
+    };
+    loadPosts();
+  }, []);
+
   return (
     <div className="max-w-6xl mx-auto mb-20">
       <h2 className="text-3xl font-bold text-center mb-12">Latest Posts</h2>
-      
+
       <div className="grid md:grid-cols-2 gap-8">
-        {regularPosts.map((post) => (
+        {posts.map((post) => (
           <Link 
             key={post.id}
             to={`/blog/${post.slug}`} 

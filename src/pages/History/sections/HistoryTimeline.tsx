@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play } from 'lucide-react';
-import { timelineEvents } from '../../../data/timelineData';
+import { getTimelineEvents, TimelineEvent } from '../../../lib/timelineEvents';
 import VideoModal from './VideoModal';
 
 export default function HistoryTimeline() {
+  const [events, setEvents] = useState<TimelineEvent[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      const data = await getTimelineEvents();
+      setEvents(data);
+    };
+    loadEvents();
+  }, []);
 
   const toggleCard = (index: number) => {
     setFlippedCards(prev => {
@@ -48,7 +57,7 @@ export default function HistoryTimeline() {
             {/* Timeline Line */}
             <div className="absolute left-4 md:left-[50%] top-8 bottom-0 w-1 bg-gradient-to-b from-red-500 via-red-500 to-yellow-500 glow-timeline" />
 
-            {timelineEvents.map((event, index) => (
+            {events.map((event, index) => (
               <div
                 key={event.year}
                 className={`timeline-item relative flex items-start md:items-center mb-24 ${

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Heart, Users, Building2, Trophy, Sparkles, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getCategories } from '../../../data/blogPosts';
+import { getCategories, BlogCategory } from '../../../lib/blogPosts';
 
 const categoryIcons = {
   'Success Stories': Heart,
@@ -22,12 +22,20 @@ const categoryColors = {
 };
 
 export default function Categories() {
-  const categories = getCategories();
-  
+  const [categories, setCategories] = useState<{ name: BlogCategory; count: number }[]>([]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      const data = await getCategories();
+      setCategories(data);
+    };
+    loadCategories();
+  }, []);
+
   return (
     <div className="max-w-6xl mx-auto mb-20">
       <h2 className="text-3xl font-bold text-center mb-12">Browse by Category</h2>
-      
+
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {categories.map((category) => {
           // @ts-ignore - we know these exist

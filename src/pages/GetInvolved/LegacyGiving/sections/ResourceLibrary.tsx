@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, BookOpen, Brain, Download, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
-import { givingGuidesPosts } from "../../../../data/blogPosts";
+import { getGivingGuidesPosts, BlogPost } from "../../../../lib/blogPosts";
 
 interface ResourceLibraryProps {
   emailSubmitted: boolean;
@@ -9,11 +9,20 @@ interface ResourceLibraryProps {
 }
 
 export default function ResourceLibrary({ emailSubmitted, setEmailSubmitted }: ResourceLibraryProps) {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     email: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      const data = await getGivingGuidesPosts();
+      setPosts(data);
+    };
+    loadPosts();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -158,7 +167,7 @@ export default function ResourceLibrary({ emailSubmitted, setEmailSubmitted }: R
           <div className="bg-gray-50 rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-6">Guide Library</h3>
             <div className="grid md:grid-cols-2 gap-x-8 gap-y-4">
-              {givingGuidesPosts.map((guide) => (
+              {posts.map((guide) => (
                 <div key={guide.id} className="flex gap-2 p-2 hover:bg-gray-100 rounded-lg">
                   <div className="mt-1 min-w-8 text-orange-700">
                     <FileText className="w-5 h-5" />

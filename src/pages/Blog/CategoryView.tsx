@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/Header';
 import PageHeader from '../../components/PageHeader';
-import { getPostsByCategory } from '../../data/blogPosts';
+import { getPostsByCategory, BlogPost } from '../../lib/blogPosts';
 import BlogPostGrid from './components/BlogPostGrid';
 import Newsletter from './sections/Newsletter';
 import { Link } from 'react-router-dom';
@@ -10,14 +10,35 @@ import { ArrowLeft } from 'lucide-react';
 
 export default function CategoryView() {
   const { category } = useParams<{ category: string }>();
-  
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
   // Convert URL-friendly format back to category name
   const categoryName = category
     ? category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
     : '';
-  
-  const posts = getPostsByCategory(categoryName as any);
-  
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      setLoading(true);
+      const data = await getPostsByCategory(categoryName as any);
+      setPosts(data);
+      setLoading(false);
+    };
+    loadPosts();
+  }, [categoryName]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <p className="text-xl">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (posts.length === 0) {
     return (
       <div className="min-h-screen">

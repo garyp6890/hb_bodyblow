@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { BlogPost } from '../../../data/blogPosts';
+import { BlogPost } from '../../../lib/blogPosts';
 
 interface BlogPostGridProps {
   posts: BlogPost[];

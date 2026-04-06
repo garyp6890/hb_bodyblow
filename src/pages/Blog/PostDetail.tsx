@@ -1,13 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '../../components/Header';
 import { Calendar, ArrowLeft, FileText, Mail, ArrowRight } from 'lucide-react';
-import { getPostBySlug } from '../../data/blogPosts';
+import { getPostBySlug, BlogPost } from '../../lib/blogPosts';
 
 export default function PostDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const post = getPostBySlug(slug || '');
-  
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadPost = async () => {
+      setLoading(true);
+      const data = await getPostBySlug(slug || '');
+      setPost(data);
+      setLoading(false);
+    };
+    loadPost();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <p className="text-xl">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!post) {
     return (
       <div className="min-h-screen">
