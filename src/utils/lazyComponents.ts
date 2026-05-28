@@ -27,3 +27,4 @@ export const LegacyGiving = lazy(() => import('../pages/GetInvolved/LegacyGiving
 export const Suggestions = lazy(() => import('../pages/Suggestions/index'));
 export const Events = lazy(() => import('../pages/Events/index'));
 export const GiftsInKind = lazy(() => import('../pages/GiftsInKind/index'));
+export const GivingGuides = lazy(() => import('../pages/GivingGuides/index'));

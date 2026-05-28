@@ -1,16 +1,16 @@
 import React from 'react';
 import { Route, Routes as RouterRoutes } from 'react-router-dom';
-import { 
-  Home, 
-  MissionVision, 
-  History, 
-  Leadership, 
-  FacilityBased, 
-  AdminTeam, 
-  BoardOfDirectors, 
-  Careers, 
-  Resources, 
-  Partners, 
+import {
+  Home,
+  MissionVision,
+  History,
+  Leadership,
+  FacilityBased,
+  AdminTeam,
+  BoardOfDirectors,
+  Careers,
+  Resources,
+  Partners,
   Programs,
   RecreationalPrograms,
   SpecialOlympics,
@@ -26,13 +26,14 @@ import {
   GetInvolved,
   LegacyGiving,
   Suggestions,
-  Events
+  Events,
+  GivingGuides,
+  GiftsInKind
 } from './lazyComponents';
 
 // Import the non-lazy components
 import BlogPostDetail from '../pages/Blog/PostDetail';
 import CategoryView from '../pages/Blog/CategoryView';
-import GiftsInKind from '../pages/GiftsInKind';
 import Login from '../pages/Admin/Login';
 import Dashboard from '../pages/Admin/Dashboard';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -65,6 +66,7 @@ function Routes() {
       <Route path="/get-involved" element={<GetInvolved />} />
       <Route path="/get-involved/legacy-giving" element={<LegacyGiving />} />
       <Route path="/gifts-in-kind" element={<GiftsInKind />} />
+      <Route path="/giving-guides" element={<GivingGuides />} />
       <Route path="/standards-accreditation" element={<StandardsAccreditation />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/suggestions" element={<Suggestions />} />
